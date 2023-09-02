@@ -20,8 +20,11 @@ upstream_dns_file: /path/to/adg.txt
 
 import base64
 import re
+import socket
+import time
 import traceback
 import urllib.request
+
 
 BASE_DNS_SERVER = [
     '223.5.5.5',
@@ -214,6 +217,24 @@ class GfwList:
             for domain in self.domains:
                 f.write(f'{domain}\n')
 
+    def format_ip(self, output):
+        print('make sure your DNS server can get non-poluted results')
+        ipset = set()
+        for domain in self.domains:
+            # Resolve domains one by one, add all resolved ips to set.
+            try:
+                print(f'resolving domain {domain}')
+                ips = socket.gethostbyname_ex(domain)[2]
+                ipset.update(ips)
+            except:
+                print(f'fail to resolve {domain}')
+                pass
+            time.sleep(0.02)
+
+        with open(output, 'w') as f:
+            for i in ipset:
+                f.write(f'{i}\n')
+
     def run(self, output: str, download: bool, gfwlist_fname: str, format: str):
         """
         :param download: download gfwlist from internet
@@ -240,6 +261,8 @@ class GfwList:
             self.format_raw(output)
         elif format == 'adguardhome':
             self.format_adguardhome(output)
+        elif format == 'ip':
+            self.format_ip(output)
 
 
 if __name__ == '__main__':
