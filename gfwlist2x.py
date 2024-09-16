@@ -23,14 +23,19 @@ import re
 import traceback
 import urllib.request
 
-BASE_DNS_SERVER = [
+# Aliyun DNS
+AliYun_DNS_SERVER = [
     '223.5.5.5',
     '223.6.6.6',
     '2400:3200::1',
     '2400:3200:baba::1',
 ]
 
-DEFAULT_SECURE_DNS_SERVER = 'https://dns.cloudflare.com/dns-query'
+BASE_DNS_SERVER = AliYun_DNS_SERVER
+
+# Use Google public DNS because it support ECS.
+DEFAULT_SECURE_DNS_SERVER = '8.8.8.8'
+
 
 class GfwList:
     URLs = [
@@ -69,7 +74,7 @@ class GfwList:
         print(f'fail to download gfwlist')
 
     # Refer to https://github.com/cokebar/gfwlist2dnsmasq/blob/master/gfwlist2dnsmasq.sh
-    # for a bash implementation which parses gfwlist and generates dnsmasq config. 
+    # for a bash implementation which parses gfwlist and generates dnsmasq config.
     # This parser is based on the bash implementation.
 
     # Ignore
