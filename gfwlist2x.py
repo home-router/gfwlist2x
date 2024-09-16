@@ -19,6 +19,7 @@ upstream_dns_file: /path/to/adg.txt
 """
 
 import base64
+from pathlib import Path
 import re
 import traceback
 import urllib.request
@@ -213,6 +214,12 @@ class GfwList:
                 f.write(f'{server}\n')
             for domain in self.domains:
                 f.write(f'[/{domain}/]{self.dns_server}\n')
+
+            extra = Path('./extra.txt')
+            if extra.exists():
+                with open(extra, 'r') as ex:
+                    f.write(ex.read())
+
 
     def format_raw(self, output):
         with open(output, 'w') as f:
